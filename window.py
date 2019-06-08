@@ -144,7 +144,7 @@ class WindowModel(NERModel):
         (Don't change the variable names)
         """
         ### YOUR CODE HERE (~3-5 lines)
-        self.input_placeholder = tf.placeholder(tf.int32,shape=(None, Config.n_window_features))
+        self.input_placeholder = tf.placeholder(tf.int32,shape=(None, self.config.n_window_features))
         self.labels_placeholder = tf.placeholder(tf.int32,shape=(None,))
         self.dropout_placeholder = tf.placeholder(tf.float32)
         ### END YOUR CODE
@@ -196,8 +196,9 @@ class WindowModel(NERModel):
             embeddings: tf.Tensor of shape (None, n_window_features*embed_size)
         """
         ### YOUR CODE HERE (!3-5 lines)
-        embeddings = tf.nn.embedding_lookup(self.pretrained_embeddings,self.input_placeholder)
-        embeddings = tf.reshape(embeddings,(-1, Config.n_window_features * Config.embed_size))
+        embedded = tf.Variable(self.pretrained_embeddings)
+        embeddings = tf.nn.embedding_lookup(embedded,self.input_placeholder)
+        embeddings = tf.reshape(embeddings,(-1, self.config.n_window_features * self.config.embed_size))
         ### END YOUR CODE
         return embeddings
 
@@ -229,10 +230,10 @@ class WindowModel(NERModel):
         dropout_rate = self.dropout_placeholder
         ### YOUR CODE HERE (~10-20 lines)
         initilizer = tf.contrib.layers.xavier_initializer(seed=10)
-        W = tf.get_variable(name="W", shape=(Config.n_window_features*Config.embed_size,Config.hidden_size), initializer=initilizer)
-        b1 = tf.get_variable(name="b1", shape=(Config.hidden_size), initializer=initilizer)
-        U = tf.get_variable(name="U", shape=(Config.hidden_size,Config.n_classes), initializer=initilizer)
-        b2 = tf.get_variable(name="b2", shape=(Config.n_classes), initializer=initilizer)
+        W = tf.get_variable(name="W", shape=(self.config.n_window_features*self.config.embed_size,self.config.hidden_size), initializer=initilizer)
+        b1 = tf.get_variable(name="b1", shape=(self.config.hidden_size), initializer=initilizer)
+        U = tf.get_variable(name="U", shape=(self.config.hidden_size,self.config.n_classes), initializer=initilizer)
+        b2 = tf.get_variable(name="b2", shape=(self.config.n_classes), initializer=initilizer)
         h = tf.nn.relu(tf.add(tf.matmul(x,W),b1))
         h_drop = tf.nn.dropout(h, dropout_rate)
         pred = tf.add(tf.matmul(h_drop,U),b2)
@@ -279,7 +280,7 @@ class WindowModel(NERModel):
             train_op: The Op for training.
         """
         ### YOUR CODE HERE (~1-2 lines)
-        opt = tf.train.AdamOptimizer(Config.lr)
+        opt = tf.train.AdamOptimizer(self.config.lr)
         train_op = opt.minimize(loss)
         ### END YOUR CODE
         return train_op

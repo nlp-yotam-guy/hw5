@@ -1,9 +1,0 @@
-2019-06-07 18:41:19,882:INFO: Building model...
-2019-06-07 18:41:19,893:WARNING: From /Users/yotammanne/Documents/NLP/hw/hw3/venv/lib/python2.7/site-packages/tensorflow/python/ops/embedding_ops.py:132: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
-Instructions for updating:
-Colocations handled automatically by placer.
-2019-06-07 18:41:20,765:WARNING: From /Users/yotammanne/Documents/NLP/hw/hw5/window.py:237: calling dropout (from tensorflow.python.ops.nn_ops) with keep_prob is deprecated and will be removed in a future version.
-Instructions for updating:
-Please use `rate` instead of `keep_prob`. Rate should be set to `rate = 1 - keep_prob`.
-2019-06-07 18:41:20,879:INFO: took 1.00 seconds
-2019-06-07 18:41:21,730:INFO: Epoch 1 out of 10
