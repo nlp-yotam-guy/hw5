@@ -38,7 +38,7 @@ class Config:
     n_word_features = 2 # Number of features for every word in the input.
     window_size = 1 # The size of the window to use.
     ### YOUR CODE HERE
-    n_window_features =  n_word_features * (2 * window_size + 1)# The total number of features used for each window.
+    n_window_features = n_word_features * (2 * window_size + 1) # The total number of features used for each window.
     ### END YOUR CODE
     n_classes = 5
     dropout = 0.5
@@ -110,7 +110,6 @@ def make_windowed_data(data, start, end, window_size = 1):
                 window.extend(w)
             a = (window,labels[i-window_size])
             windowed_data.append(a)
-
         ### END YOUR CODE
     return windowed_data
 
@@ -237,7 +236,6 @@ class WindowModel(NERModel):
         h = tf.nn.relu(tf.add(tf.matmul(x,W),b1))
         h_drop = tf.nn.dropout(h, dropout_rate)
         pred = tf.add(tf.matmul(h_drop,U),b2)
-
         ### END YOUR CODE
         return pred
 
@@ -413,9 +411,9 @@ def do_train(args):
                 predictions = [[LBLS[l] for l in preds] for preds in predictions]
                 output = zip(sentences, labels, predictions)
 
-                with open(model.config.conll_output, 'w') as f:
+                with open(model.config.conll_output, 'wb') as f:
                     write_conll(f, output)
-                with open(model.config.eval_output, 'w') as f:
+                with open(model.config.eval_output, 'wb') as f:
                     for sentence, labels, predictions in output:
                         print_sentence(f, sentence, labels, predictions)
 
