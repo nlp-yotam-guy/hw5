@@ -318,7 +318,15 @@ class RNNModel(NERModel):
             pred: tf.Tensor of shape (batch_size, max_length, n_classes)
         """
         ### YOUR CODE HERE (~4-6 lines)
-
+        cell = tf.nn.rnn_cell.GRUCell(self.config.hidden_size,
+                                      kernel_initializer=tf.contrib.layers.xavier_initializer(),
+                                      bias_initializer=tf.constant_initializer(0))
+        drop = tf.nn.rnn_cell.DropoutWrapper(cell,dropout_rate)
+        #initial_state = cell.zero_state(self.config.batch_size,dtype=tf.float32)
+        preds = tf.nn.dynamic_rnn(drop,x,dtype=tf.float32)#,initial_state=initial_state)
+        preds = tf.layers.dense(preds[0],self.config.n_classes)
+        #preds = tf.nn.softmax(preds)
+        #preds = tf.reshape(preds, [-1,self.config.batch_size,self.config.n_classes])
         ### END YOUR CODE
 
         return preds
@@ -423,6 +431,13 @@ class RNNModel(NERModel):
         records = []
 
         ### YOUR CODE HERE (~5-10 lines)
+        records.append(tf.summary.histogram('histogram summary of the prediction logits',pred))
+        records.append(tf.summary.scalar('scalar summary of the average loss', loss))
+        self.probs = tf.nn.softmax(pred)
+        self.probs = tf.clip_by_value(self.probs,0,1)
+        entropy = tf.reduce_mean(-self.probs * tf.log(self.probs))
+        e = tf.summary.scalar('entropy',entropy)
+        records.append(e)
 
         ### END YOUR CODE
 
